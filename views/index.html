@@ -3,6 +3,33 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="css/style.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script>
+    var key = "LjRenkAdJ357E3TIpG04kw03oLlrPFJlmz39%2FADdK2vMqi4eZ7DepCp%2Fd0K7H9eCRG1OL4Qw3KnUSh4vmvuCUA%3D%3D";
+    var url = "http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19SidoInfStateJson?serviceKey=" + key + "&pageNo=1&numOfRows=10&startCreateDt=20200410&endCreateDt=20200410";
+
+    console.log("url : " , url)
+    $.ajax({
+      type: "get",
+      url: url,
+      contentType: "text/xml; charset=utf-8",
+      dataType: 'jsonp',
+      success: function (response) {
+        console.log("success response : " , response);
+          $('#result').html('success:');
+          $(response).find("string").each(function () {
+              $('#result').append('<br />'+$(this).text());
+          });
+      },
+      error: function (response) {
+        console.log("error response : " , response);
+          $('#result').html('failure:<br />' + response.responseText);
+      },
+      fail: function(err){
+        console.log("err : ", err);
+      }
+    });
+    </script>
 </head>
 <body>
 </body>
