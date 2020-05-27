@@ -22,4 +22,11 @@ module.exports = function(app, connection)
 			res.send(rows);
 		});
 	});
+
+	app.get('/page/:category',function(req,res){
+			const category = req.params.category;
+			console.log("category : " , category);
+			res.render(category +'.html');
+	});
+
 }
