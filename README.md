@@ -52,3 +52,13 @@ SELECT * FROM COVID WHERE DATE='2020-05-01';
 
 
 ![사진](https://user-images.githubusercontent.com/25836808/83469837-b1f9d000-a4bb-11ea-8201-45a6c784e182.png)
+
+
+다음은 프로젝트 폴더별 역할입니다
+
+![사진](https://user-images.githubusercontent.com/25836808/83471085-ba9fd580-a4be-11ea-90f1-5c6c1d4b4612.png)
+
+
+
+
+## 서버를 구축하는방법
