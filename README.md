@@ -50,6 +50,5 @@ SELECT * FROM COVID WHERE DATE='2020-05-01';
 서버는 받은 데이터를 처리하여 WebClient에 전달합니다.  
 다음 사진은 앞서 설명드린 과정을 사진으로 표현한것입니다.
 
-```
+
 ![사진](https://user-images.githubusercontent.com/25836808/83469837-b1f9d000-a4bb-11ea-8201-45a6c784e182.png)
-```
