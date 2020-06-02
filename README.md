@@ -59,7 +59,7 @@ SELECT * FROM COVID WHERE DATE='2020-05-01';
 
 ## 프로젝트 폴더별 역할
 
-![사진](https://user-images.githubusercontent.com/25836808/83471085-ba9fd580-a4be-11ea-90f1-5c6c1d4b4612.png)
+![Untitled Diagram (1)](https://user-images.githubusercontent.com/25836808/83472611-acec4f00-a4c2-11ea-805d-cb40297fe778.png)
 
 ## 개인 컴퓨터에 서버를 구축하는방법
 
