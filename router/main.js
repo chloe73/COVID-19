@@ -13,8 +13,8 @@ module.exports = function(app, connection)
 		*/
 	app.get('/getAccmulate',function(req,res){
 		var date = req.query.date + " 00:00:00"; 	// 클라이언트에게 받은 시간
-		var mode = req.query.mode;								// 클라이언트에게 받은 모드("weeks" or "days")
-		var mySql_Query;													// MySQL 언어를 저장할 변수
+		var mode = req.query.mode;			// 클라이언트에게 받은 모드("weeks" or "days")
+		var mySql_Query;				// MySQL 언어를 저장할 변수
 
 		switch(mode){
 			case "weeks" :
