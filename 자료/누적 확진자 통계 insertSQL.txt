@@ -9,4 +9,26 @@ insert into accumulate_logtable values('2020-05-26',22044,11225,269,783,144,6875
 insert into accumulate_logtable values('2020-05-25',19089,11206,267,774,144,6874,144,30,45,50,47,766,56,59,145,21,18,1377,123,14);
 insert into accumulate_logtable values('2020-05-24',20333,11190,266,768,144,6873,143,30,45,50,47,760,56,59,145,21,18,1376,123,14);
 insert into accumulate_logtable values('2020-05-23',21569,11165,266,762,144,6873,141,30,45,50,47,754,55,59,145,21,18,1370,123,14);
+insert into days_logtable values('2020-05-22',1738	12	1	4	0	0	6	0	0	0	0	0	0	0	1	0	0	0	0	0);
+insert into days_logtable values('2020-05-21',-574	32	0	10	0	1	8	0	0	0	0	10	0	0	0	1	0	0	0	0);
+insert into days_logtable values('2020-05-20',832	13	0	6	0	0	2	0	0	4	0	1	0	0	0	0	0	0	0	0);
+insert into days_logtable values('2020-05-19',-1567	15	1	1	0	1	0	0	0	0	0	3	0	3	0	0	0	0	0	0);
+insert into days_logtable values('2020-05-18',-683	13	0	5	0	1	0	0	1	0	0	0	0	0	0	0	0	0	2	0);
+insert into days_logtable values('2020-05-17',);
+insert into days_logtable values('2020-05-16',);
+insert into days_logtable values('2020-05-15',);
+insert into days_logtable values('2020-05-14',);
+insert into days_logtable values('2020-05-13',);
+insert into days_logtable values('2020-05-12',);
+insert into days_logtable values('2020-05-11',);
+insert into days_logtable values('2020-05-10',);
+insert into days_logtable values('2020-05-09',);
+insert into days_logtable values('2020-05-08',);
+insert into days_logtable values('2020-05-07',);
+insert into days_logtable values('2020-05-06',);
+insert into days_logtable values('2020-05-05',);
+insert into days_logtable values('2020-05-04',);
+insert into days_logtable values('2020-05-03',);
+insert into days_logtable values('2020-05-02',);
+insert into days_logtable values('2020-05-01',);
 
