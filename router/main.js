@@ -3,7 +3,7 @@ module.exports = function(app, connection)
 	// 127.0.0.1:3000/ 로 들어왔을때 처리하는 서버코드
 	app.get('/',function(req,res){
 			// index.html을 클라이언트에게 rendering해라.
-			res.render('index.html'); 
+			res.render('index.html');
 	});
 
 	/**
@@ -74,6 +74,18 @@ module.exports = function(app, connection)
 			const category = req.params.category;
 			console.log("category : " , category);
 			res.render(category +'.html');
+	});
+
+
+
+	app.get('/getRecent',function(req,res){
+		// mySql_Query = "SELECT Seoul+Busan+Daegu+Incheon+Gwangju+Daejeon+Ulsan+Sejong+Gyeonggi+Gangwon+Chungbuk+Chungnam+Jeonbuk+Jeonnam+Gyeongbuk+Gyeongnam+Jeju AS ROW_SUM FROM days_logtable ORDER BY date DESC LIMIT 1; "
+
+		mySql_Query = "SELECT date, checkup, confirm, death from days_logtable ORDER BY date DESC limit 1;"
+		connection.query(mySql_Query, function(err, rows) {
+			if(err) throw err; // 에러가 있을경우 에러메시지를 출력
+			res.send(rows);		 // 에러가 없을경우 클라이언트에게 결과값(rows)를 응답.
+		});
 	});
 
 }
