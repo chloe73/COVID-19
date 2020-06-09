@@ -78,10 +78,18 @@ module.exports = function(app, connection)
 
 
 
-	app.get('/getRecent',function(req,res){
+	app.get('/getLatestDay',function(req,res){
 		// mySql_Query = "SELECT Seoul+Busan+Daegu+Incheon+Gwangju+Daejeon+Ulsan+Sejong+Gyeonggi+Gangwon+Chungbuk+Chungnam+Jeonbuk+Jeonnam+Gyeongbuk+Gyeongnam+Jeju AS ROW_SUM FROM days_logtable ORDER BY date DESC LIMIT 1; "
+		mySql_Query = "SELECT * from days_logtable ORDER BY date DESC limit 2;"
+		connection.query(mySql_Query, function(err, rows) {
+			if(err) throw err; // 에러가 있을경우 에러메시지를 출력
+			res.send(rows);		 // 에러가 없을경우 클라이언트에게 결과값(rows)를 응답.
+		});
+	});
 
-		mySql_Query = "SELECT date, checkup, confirm, death from days_logtable ORDER BY date DESC limit 1;"
+	app.get('/getLatestAccmulate',function(req,res){
+		// mySql_Query = "SELECT Seoul+Busan+Daegu+Incheon+Gwangju+Daejeon+Ulsan+Sejong+Gyeonggi+Gangwon+Chungbuk+Chungnam+Jeonbuk+Jeonnam+Gyeongbuk+Gyeongnam+Jeju AS ROW_SUM FROM days_logtable ORDER BY date DESC LIMIT 1; "
+		mySql_Query = "SELECT * from accumulate_logtable ORDER BY date DESC limit 1;"
 		connection.query(mySql_Query, function(err, rows) {
 			if(err) throw err; // 에러가 있을경우 에러메시지를 출력
 			res.send(rows);		 // 에러가 없을경우 클라이언트에게 결과값(rows)를 응답.
