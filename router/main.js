@@ -19,7 +19,8 @@ module.exports = function(app, connection)
 		switch(mode){
 			case "weeks" :
 				// "최근 1주일의 누적 확진자수를 검색해줘" MySQL 명령문장을 저장.
-				mySql_Query = "SELECT * FROM accumulate_logtable WHERE date > date_add(now(),interval -8 day);"
+				// mySql_Query = "SELECT * FROM accumulate_logtable WHERE date > date_add(now(),interval -8 day);"
+				mySql_Query = "SELECT * from accumulate_logtable ORDER BY date DESC limit 7";
 				break;
 			case "days" :
 				 // "클라이언트에게 받은 날짜의 확진자수를 검색해줘" MySQL 명령문장을 저장.
@@ -49,7 +50,8 @@ module.exports = function(app, connection)
 		switch(mode){
 			case "weeks" :
 				// "최근 1주일의 일일 확진자수를 검색해줘" MySQL 명령문장을 저장.
-				mySql_Query = "SELECT * FROM days_logtable WHERE date > date_add(now(),interval -8 day);"
+				// mySql_Query = "SELECT * FROM days_logtable WHERE date > date_add(now(),interval -8 day);"
+				mySql_Query = "SELECT * from days_logtable ORDER BY date DESC limit 7";
 				break;
 			case "days" :
 				// "클라이언트에게 받은 날짜의 확진자수를 검색해줘" MySQL 명령문장을 저장.
