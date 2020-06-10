@@ -74,8 +74,16 @@ module.exports = function(app, connection)
 		*/
 	app.get('/page/:category',function(req,res){
 			const category = req.params.category;
+			console.log("req : " , req);
 			console.log("category : " , category);
 			res.render(category +'.html');
+	});
+
+	app.get('/state/:category',function(req,res){
+			const category = req.params.category;
+			console.log("req : " , req);
+			console.log("category : " , category);
+			res.send(true);
 	});
 
 
