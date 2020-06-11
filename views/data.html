@@ -19,7 +19,6 @@
        success: function(result){},
        error: function(error){console.log("error : " , error);}
     }).done(function(result){
-
        // DB 기준 맨 마지막날짜와 그전날을 가져와, 차이를 구하고, 문자열을 만든다.
        var gap_confirm = (result[0].confirm - result[1].confirm);
        var gap_checkup = (result[0].checkup - result[1].checkup);
