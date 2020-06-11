@@ -1,9 +1,16 @@
 <head>
   <script>
-    // 뒤로가기 이벤트가 생겼을때, 페이지 이동이 아닌 화면을 statement 제목 목록이 있는곳으로 보낸다.
+
+    // 뒤로가기 이벤트가 생겼을때, 페이지 이동이 화면을 바꾼다.
+    // Statement comment 화면에서 뒤로가기 -> statement 제목목록(statement.html) 화면으로 이동
     history.pushState(null, null, location.href);
     window.onpopstate = function(event) {
-      $(".wrap").load('/page/statement')
+      var menu = sessionStorage.getItem("sideMenu");
+      switch(menu){
+        case "STATE":
+          $(".wrap").load('/page/statement');
+          break;
+      }
     };
 
     // 세션에 저장되어 있는 제목의 ID값을 가져온다.
@@ -12,19 +19,21 @@
     // statement 제목 ID를 가지고, 서버에 제목 ID에 맞는 내용을 요청한다.
     jQuery.ajax({
        type: "GET",
-       url: "/getStatementComment",
-       data: {id:statementID},
+       url: "/getComment",
+       data: {
+         id:statementID,
+         table : "statement_table"
+       },
        success: function(result){},
        error: function(error){console.log("error : " , error);}
     }).done(function(result){
-      // statement DB에 등록된 제목 개수만큼 반복해서 html Table을 그린다.
+      // DB에 등록된 제목 개수만큼 반복해서 html Table을 그린다.
       result.forEach((item, i) => {
-        console.log("result : ", item);
-        $(".cdcNoticeTable").append("<tr class='title'></tr>");
+        $(".stateTable").append("<tr class='title'></tr>");
         $(".title").append("<td class='tb_title' style='text-align:left;'>" + item.title +"</td>");
         $(".title").append("<td class='tb_date'>" + getFormatDate(new Date(item.date)) +"</td>");
 
-        $(".cdcNoticeTable").append("<tr class='comment' ></tr>");
+        $(".stateTable").append("<tr class='comment' ></tr>");
         $(".comment").append("<td colspan='2' class='comment_tr' style='text-align:left;'></td>");
         $(".comment_tr").append(item.comment);
       });
@@ -45,10 +54,10 @@
 </head>
 
 <div class="statementWrap">
-<div class="header">
-  <p>코로나19팩트 & 이슈체크</p>
-</div>
+  <div class="header">
+    <p>코로나19팩트 & 이슈체크</p>
+  </div>
 
-<table class="cdcNoticeTable">
-</table>
+  <table class="stateTable">
+  </table>
 </div>

@@ -74,19 +74,9 @@ module.exports = function(app, connection)
 		*/
 	app.get('/page/:category',function(req,res){
 			const category = req.params.category;
-			console.log("req : " , req);
 			console.log("category : " , category);
 			res.render(category +'.html');
 	});
-
-	app.get('/state/:category',function(req,res){
-			const category = req.params.category;
-			console.log("req : " , req);
-			console.log("category : " , category);
-			res.send(true);
-	});
-
-
 
 	app.get('/getLatestDay',function(req,res){
 		// mySql_Query = "SELECT Seoul+Busan+Daegu+Incheon+Gwangju+Daejeon+Ulsan+Sejong+Gyeonggi+Gangwon+Chungbuk+Chungnam+Jeonbuk+Jeonnam+Gyeongbuk+Gyeongnam+Jeju AS ROW_SUM FROM days_logtable ORDER BY date DESC LIMIT 1; "
@@ -105,19 +95,22 @@ module.exports = function(app, connection)
 			res.send(rows);		 // 에러가 없을경우 클라이언트에게 결과값(rows)를 응답.
 		});
 	});
-
-	// 코로나 팩트체크의 타이틀을 날짜순으로 모두 가져와라
-	app.get('/getStatementTitle',function(req,res){
-		mySql_Query = "SELECT * from statement_table ORDER BY date DESC;"
+	// 질병관리본부 테이블의 제목ID에 맞는 내용을 가져와라
+	app.get('/getComment',function(req,res){
+		var id = req.query.id;
+		var table = req.query.table;
+		mySql_Query = "SELECT * from " + table + " WHERE id="+id+"";
+		console.log("mySql_Query : " , mySql_Query);
 		connection.query(mySql_Query, function(err, rows) {
 			if(err) throw err; // 에러가 있을경우 에러메시지를 출력
 			res.send(rows);		 // 에러가 없을경우 클라이언트에게 결과값(rows)를 응답.
 		});
 	});
 
-	app.get('/getStatementComment',function(req,res){
-		var id = req.query.id;
-		mySql_Query = "SELECT * from statement_table WHERE id="+id;
+	// 질병관리본부 테이블의 제목을 날짜순으로 모두 가져와라
+	app.get('/getTitle',function(req,res){
+		var table = req.query.table;
+		mySql_Query = "SELECT * from " + table +" ORDER BY date DESC;"
 		connection.query(mySql_Query, function(err, rows) {
 			if(err) throw err; // 에러가 있을경우 에러메시지를 출력
 			res.send(rows);		 // 에러가 없을경우 클라이언트에게 결과값(rows)를 응답.
