@@ -40,8 +40,11 @@
       $("#txt_daysDeathGap").html(gap_death);
 
       $("#txt_map_accumulate").html(result[0].confirm + "명");
-      $("#txt_map_daysGap").html(gap_confirm);
+      $("#txt_map_daysConfirmGap").html(gap_confirm);
       $("#txt_map_accumulateDeath").html(result[0].death + "명");
+      $("#txt_map_daysCheckupGap").html(gap_checkup);
+      $("#txt_map_accumulateCheckup").html(result[0].checkup + "명");
+      $("#txt_map_daysDeathGap").html(gap_death);
 
       var daysChart = document.getElementById('daysChart').getContext('2d');
       new Chart(daysChart, {
@@ -205,20 +208,32 @@
 
       <table class="infoTable">
         <tr>
-          <td class="title"><a>누적 확진환자</a></td>
+          <td class="title"><a>일일 확진환자</a></td>
           <td class="value" ><a id="txt_map_accumulate">0명</a></td>
         </tr>
         <tr>
-          <td class="title" style="color:#10b4e9"><a>전면대비 증감</a></td>
-          <td class="value" style="color:#10b4e9"><a id="txt_map_daysGap">0명</a></td>
+          <td class="title" style="color:#10b4e9"><a>전날대비 확진증감</a></td>
+          <td class="value" style="color:#10b4e9"><a id="txt_map_daysConfirmGap">0명</a></td>
         </tr>
         <tr>
-          <td class="title"><a>누적 사망자</a></td>
+          <td class="title"><a>일일 검사자</a></td>
+          <td class="value"><a id="txt_map_accumulateCheckup">0명</a></td>
+        </tr>
+        <tr>
+          <td class="title" style="color:#10b4e9"><a>전날대비 검사증감</a></td>
+          <td class="value" style="color:#10b4e9"><a id="txt_map_daysCheckupGap">0명</a></td>
+        </tr>
+        <tr>
+          <td class="title"><a>일일 사망자</a></td>
           <td class="value"><a id="txt_map_accumulateDeath">0명</a></td>
+        </tr>
+        <tr>
+          <td class="title" style="color:#10b4e9"><a>전날대비 사망증감</a></td>
+          <td class="value" style="color:#10b4e9"><a id="txt_map_daysDeathGap">0명</a></td>
         </tr>
       </table>
 
-      <table class="linkTable">
+      <!-- <table class="linkTable">
         <tr style="background:#006666;">
           <td><a>공적마스크 일일 공급현황</a></td>
         </tr>
@@ -228,7 +243,7 @@
         <tr style="background:#3889cb">
           <td><a>대상별 피해자원 정책</a></td>
         </tr>
-      </table>
+      </table> -->
     </div>
   </div>
 
