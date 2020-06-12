@@ -84,7 +84,15 @@ module.exports = function(app, connection)
 	});
 
 	app.get('/getLatestDay',function(req,res){
-		mySql_Query = "SELECT * from days_logtable ORDER BY date DESC limit 2;"
+		var date = req.query.date;
+		console.log("date : " ,date);
+		if(!date)
+			mySql_Query = "SELECT * from days_logtable ORDER BY date DESC limit 2;"
+		else {
+			mySql_Query = "SELECT * from days_logtable WHERE date='" + date + "' ORDER BY date DESC limit 2;"
+		}
+
+		console.log("mySql_Query : " ,mySql_Query);
 		try{
 			connection.query(mySql_Query, function(err, rows) {
 				if(err) throw err; // 에러가 있을경우 에러메시지를 출력
