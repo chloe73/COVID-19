@@ -19,6 +19,7 @@
       sessionStorage.clear();
       function onPage(value){
         $(".wrap").load('/page/' + value);
+        $(".datepickers-container").hide();     // 선택하고 숨김
       }
     </script>
 </head>

@@ -6,8 +6,8 @@
   width:70%;
   margin-top: 50px;
 }
-
 #dataWrap > #header > .header_title{
+  top:30px;
   position:relative;
 }
 #dataWrap > #header > .header_title > img{
@@ -73,7 +73,7 @@
 }
 
 #dataWrap > #header > .headerContentsWrap > div > .contentWrap{
-  width:33%;
+  width:25%;
   height:100%;
   float:left;
 

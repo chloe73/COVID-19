@@ -5,31 +5,39 @@
   <script>
     $(".mapWrap").load("/page/Republic_Korea_2019");
 
+    $(".datepickers-container").show();     // 선택하고 숨김
     // 마지막 2일의 일일 정보를 가져온다.(전날과 비교, 오늘의 데이터를 위해)
-    getLatestDaysQuery(null);
+    getTotalData(null);
+    getDaysData(null)
     // getLatestAccmulateQuery(null);
     // getLatestDayseQuery_Map(null);
     // console.log("getFormatDate : " , getFormatDate(new Date("2020-04-10 11:17:35.35")))
-    function getLatestDaysQuery(date){
-      var yesterDay = new Date();
-      yesterDay.setTime(new Date().getTime() - (1 * 24 * 60 * 60 * 1000))
 
-      // 공공데이터 누적 API 조회
+
+    // 공공데이터 누적 API 조회
+    function getTotalData(date){
+      var today = date == null ? new Date() : new Date(date);
+      var yesterDay = new Date();
+        yesterDay.setTime(today.getTime() - (1 * 24 * 60 * 60 * 1000));
+
       jQuery.ajax({
          type: "GET",
          url: "/getLatestInfoData",
          data: {
-           start : getFormatDate(yesterDay),
-           end : getFormatDate(new Date())
+           start : getFormatDate(null, yesterDay),
+           end : getFormatDate(null, today)
          },
          success: function(result){},
          error: function(error){console.log("error : " , error);}
       }).done(function(result){               // 선택날짜의 전날과, 지금의 사망자수의 차이를 구한다
           var item =  JSON.parse(result).response.body.items.item;
           $("#txt_titleDate").html("&nbsp&nbsp(" + item[0].createDt + " 기준)");
+          $("#txt_Decide").html(item[0].decideCnt + "명");
+
           $("#txt_accumulate_checkup").html(item[0].examCnt + "명");
           $("#txt_accumulate_confirm").html(item[0].decideCnt+ "명");
           $("#txt_accumulate_death").html(item[0].deathCnt+ "명");
+          $("#txt_map_accumulateDeath").html(item[0].deathCnt+ "명");
           $("#chart_accmulate_checkup").html("(" + item[0].examCnt + "명)");
           $("#chart_accmulate_confirm").html("(" + item[0].decideCnt + "명)");
 
@@ -50,111 +58,83 @@
             }
           });
       });
+    }
 
+
+
+    function getDaysData(date){
+      var today = date == null ? new Date() :  new Date(date);
+      var yesterDay = new Date();
+        yesterDay.setTime(today.getTime() - (1 * 24 * 60 * 60 * 1000));
+
+      // 공공데이터 누적 API 조회
       jQuery.ajax({
          type: "GET",
          url: "/getLatestDosiData",
          data: {
-           start : getFormatDate(yesterDay),
-           end : getFormatDate(new Date())
+           start : getFormatDate(null, yesterDay),
+           end : getFormatDate(null, today)
          },
          success: function(result){},
          error: function(error){console.log("error : " , error);}
       }).done(function(result){               // 선택날짜의 전날과, 지금의 사망자수의 차이를 구한다
         var today =  JSON.parse(result.today).response.body.items.item;
         var yesterDay =  JSON.parse(result.yesterDay).response.body.items.item;
-        console.log("item : " , today)
-        var sum = 0;
-        today.forEach((item, i) => {
-          sum += item.incDec;
-          console.log( item.gubun + " : " + item.incDec);
-        });
-        console.log("sum : " , sum - today[0].incDec);
 
-        //   console.log("item : " , yesterDay)
+        $("#txt_IncDec").html("(" + today[today.length-1].incDec + ")");
+        $("#txt_IsolClear").html(today[today.length-1].isolClearCnt + "명");
+        $("#txt_IsolingClear").html(today[today.length-1].isolIngCnt + "명");
+        $("#txt_Death").html(today[today.length-1].deathCnt + "명");
 
-      });
+        $("#txt_IsolClearCnt").html("(" + (yesterDay[yesterDay.length-1].isolClearCnt - today[today.length-1].isolClearCnt) + ")");
+        $("#txt_IsolingClearCnt").html("(" + (yesterDay[yesterDay.length-1].isolIngCnt - today[today.length-1].isolIngCnt) + ")");
+        $("#txt_DeathCnt").html("(" + (yesterDay[yesterDay.length-1].deathCnt - today[today.length-1].deathCnt) + ")");
 
-
-
-
-
-
-
-      jQuery.ajax({
-         type: "GET",
-         url: "/getLatestDay",
-         data: {date : date},
-         success: function(result){},
-         error: function(error){console.log("error : " , error);}
-      }).done(function(result){
-         // DB 기준 맨 마지막날짜와 그전날을 가져와, 차이를 구하고, 문자열을 만든다.
-         console.log("(getLatestDaysQuery) result : " ,result);
-         var gap_confirm = (result[0].confirm - result[1].confirm);               // 선택날짜의 전날과, 지금의 확진자수의 차이를 구한다
-         var gap_checkup = (result[0].checkup - result[1].checkup);               // 선택날짜의 전날과, 지금의 검사자수의 차이를 구한다
-         var gap_death = (result[0].death - result[1].death);                     // 선택날짜의 전날과, 지금의 사망자수의 차이를 구한다
-         gap_confirm = gap_confirm > 0 ? "(+" + gap_confirm +")" : "("+gap_confirm+")";     // 차이를 (+3), (-3) 이렇게 포맷해서 문자열로 저장
-         gap_checkup = gap_checkup > 0 ? "(+" + gap_checkup +")" : "("+gap_checkup+")";     // 차이를 (+3), (-3) 이렇게 포맷해서 문자열로 저장
-         gap_death = gap_death >= 0 ? "(+" + gap_death +")" : "("+gap_death+")";            // 차이를 (+3), (-3) 이렇게 포맷해서 문자열로 저장
-
-
-        // 받은 서버데이터를 해당 id에 입력한다.
-        $("#txt_titleDate").html("&nbsp&nbsp(" + getFormatDate(new Date(result[0].date)) + " 기준)");
-        $("#txt_daysConfirm").html(result[0].confirm + "명");
-        $("#txt_daysConfirmGap").html(gap_confirm);
-
-        $("#txt_daysCheckup").html(result[0].checkup + "명");
-        $("#txt_daysCheckupGap").html(gap_checkup);
-
-        $("#txt_daysDeath").html(result[0].death + "명");
-        $("#txt_daysDeathGap").html(gap_death);
-
-        $("#txt_map_accumulate").html(result[0].confirm + "명");
-        $("#txt_map_daysConfirmGap").html(gap_confirm);
-        $("#txt_map_accumulateDeath").html(result[0].death + "명");
-        $("#txt_map_daysCheckupGap").html(gap_checkup);
-        $("#txt_map_accumulateCheckup").html(result[0].checkup + "명");
-        $("#txt_map_daysDeathGap").html(gap_death);
+        $("#txt_map_accumulate").html(today[today.length-1].incDec + "명");
+        $("#txt_map_daysConfirmGap").html("(" + (yesterDay[yesterDay.length-1].incDec - today[today.length-1].incDec) + ")");
+        $("#txt_map_accumulateCheckup").html(today[today.length-1].isolIngCnt + "명");
+        $("#txt_map_daysCheckupGap").html("(" + (yesterDay[yesterDay.length-1].isolIngCnt - today[today.length-1].isolIngCnt) + ")");
+        $("#txt_map_daysDeathGap").html("(" + (yesterDay[yesterDay.length-1].deathCnt - today[today.length-1].deathCnt) + ")");
 
         var daysChart = document.getElementById('daysChart').getContext('2d');
         new Chart(daysChart, {
           type: 'pie',
           data: {
-            labels: ['확진','검사중'],
+            labels: ['일일 확진자','현재 검사중'],
             datasets: [{
               backgroundColor: ['#0b2284','#d3d3d3'],
-              data: [result[0].confirm, result[0].checkup],
+              data: [today[today.length-1].incDec, today[today.length-1].isolIngCnt],
               borderColor:"#f2f2f2"
             }]
           },
-          options: {
-            legend: {display: true}
-          }
+          options: {  legend: {display: true}  }
         });
-
-     });
+      });
     }
 
+
     // 달력 이미지의 기본세팅하는곳
-    $(".datepicker-here").datepicker({
+    $(".calenderClass").datepicker({
       language: 'en',
       onSelect: function onSelect(fd, date) {
-        var date = getFormatDate(date);
+        var date = getFormatDate("YY-MM-HH hh:mm:ss", date);
         console.log("date : " ,date);
+        getTotalData(date);
+        getDaysData(date);
         // getLatestDaysQuery(date);         // 선택된 날짜의 최근 2일간의 일일 데이터를 다시 가져옴
         // getLatestAccmulateQuery(date);    // 선택된 날짜의 최근 2일간의 누적 데이터를 다시 가져옴
-        $(".datepicker-here").hide();     // 선택하고 숨김
+        $(".calenderClass").hide();     // 선택하고 숨김
       }
     })
 
     // 캘린더 이미지를 클릭했을때
     $(".calender").click(function(){
-      $(".datepicker-here").show();     // 달력을 보여주고
-      $(".datepicker-here").focus();    // 달력에 포커스를 주어라.(없으면안됨)
+      $(".calenderClass").show();     // 달력을 보여주고
+      $(".calenderClass").focus();    // 달력에 포커스를 주어라.(없으면안됨)
     });
 
     // DB의 날짜를 한국형식(YYYY-MM-HH)로 리턴해주는 함수.
-    function getFormatDate(date){
+    function getFormatDate(mode, date){
       var year = date.getFullYear();
       var month = (1 + date.getMonth());
       var day = date.getDate();
@@ -163,7 +143,9 @@
       var second = date.getSeconds();
       month = month >= 10 ? month : '0' + month;
       day = day >= 10 ? day : '0' + day;
-      return  year + month + day;
+
+      if(mode == "YY-MM-HH hh:mm:ss") return year + "-" + month + "-"+ day + " 00:00:00";
+      else return  year + month + day;
     }
 
   </script>
@@ -175,7 +157,7 @@
       <div class="header_title">
         <h2>환자현황</h2>
         <h5 id="txt_titleDate"></h5>
-        <input type='text' class="datepicker-here" data-position="left top"  data-language='en'/>
+        <input type='text' class="calenderClass" data-position="left top"  data-language='en'/>
         <img src="images/calendar-01.png"; alt="" class="calender">
       </div>
 
@@ -185,7 +167,7 @@
         </div>
 
         <div class="confirmCountWrap">
-          <a>검사중 (n)</a>
+          <a>치료중 (n)</a>
         </div>
       </div>
 
@@ -193,20 +175,26 @@
         <div style="width:90%; height:100%; position:absolute; left:5%;">
           <div class="contentWrap">
             <a class="contentTitle">확진환자</a>
-            <a class="contentConfirm" id="txt_daysConfirm">0명</a>
-            <a class="contentCompare" id="txt_daysConfirmGap">(0)</a>
+            <a class="contentConfirm" id="txt_Decide">0명</a>
+            <a class="contentCompare" id="txt_IncDec">(0)</a>
           </div>
 
           <div class="contentWrap">
-            <a class="contentTitle">검사중</a>
-            <a class="contentConfirm" id="txt_daysCheckup">0명</a>
-            <a class="contentCompare" id="txt_daysCheckupGap">(0)</a>
+            <a class="contentTitle">치료완료</a>
+            <a class="contentConfirm" id="txt_IsolClear">0명</a>
+            <a class="contentCompare" id="txt_IsolClearCnt">(0)</a>
+          </div>
+
+          <div class="contentWrap">
+            <a class="contentTitle">치료중</a>
+            <a class="contentConfirm" id="txt_IsolingClear">0명</a>
+            <a class="contentCompare" id="txt_IsolingClearCnt">(0)</a>
           </div>
 
           <div class="contentWrap">
             <a class="contentTitle">사망자</a>
-            <a class="contentConfirm" id="txt_daysDeath">0명</a>
-            <a class="contentCompare" id="txt_daysDeathGap">(0)</a>
+            <a class="contentConfirm" id="txt_Death">0명</a>
+            <a class="contentCompare" id="txt_DeathCnt">(0)</a>
           </div>
         </div>
       </div>
@@ -283,7 +271,7 @@
           <td class="value" style="color:#10b4e9"><a id="txt_map_daysConfirmGap">0명</a></td>
         </tr>
         <tr>
-          <td class="title"><a>일일 검사자</a></td>
+          <td class="title"><a>현재 치료중</a></td>
           <td class="value"><a id="txt_map_accumulateCheckup">0명</a></td>
         </tr>
         <tr>
@@ -291,7 +279,7 @@
           <td class="value" style="color:#10b4e9"><a id="txt_map_daysCheckupGap">0명</a></td>
         </tr>
         <tr>
-          <td class="title"><a>일일 사망자</a></td>
+          <td class="title"><a>누적 사망자</a></td>
           <td class="value"><a id="txt_map_accumulateDeath">0명</a></td>
         </tr>
         <tr>

@@ -57,7 +57,23 @@ module.exports = function(app, connection)
 		const numOfRow = 10;
 		var start = req.query.start;
 		var end = req.query.end;
+		console.log(start + " to " + end)
 		requestAPI("getCovid19InfStateJson", page, numOfRow, start, end,function(data){
+			if(res)
+				res.send(data);
+			else {
+				res.send(false)
+			}
+		});
+	});
+
+	app.get('/getWeeksDosiData',function(req,res){
+	 	const page = 1;
+		const numOfRow = 10;
+		var start = req.query.start;
+		var end = req.query.end;
+		console.log("start : " + start + " end : " + end)
+		requestAPI("getCovid19SidoInfStateJson", page, numOfRow, start, end,function(data){
 			if(res)
 				res.send(data);
 			else {
