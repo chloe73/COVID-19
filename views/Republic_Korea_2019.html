@@ -1,52 +1,55 @@
 <head>
   <script>
-  jQuery.ajax({
-      type: "GET",
-      url: "/getLatestDay",
-      data: {},
-      success: function(result){},
-      error: function(error){console.log("error : " , error);}
-  }).done(function(result){
-      /**
-        * 11    26    27    28    29    30    31    40    41  42    43    44    45    46    47    49    50
-        * 서울  부산  대구  인천    광주  대전  울산  세종  경기  강원  충북  충남  전북  전남  경북  경남  제주
-        **/
-      $("#LCD11_count").text(result[0].Seoul+"명");
-      $("#LCD26_count").text(result[0].Busan+"명");
-      $("#LCD27_count").text(result[0].Daegu+"명");
-      $("#LCD28_count").text(result[0].Incheon+"명");
-      $("#LCD29_count").text(result[0].Gwangju+"명");
-      $("#LCD30_count").text(result[0].Daejeon+"명");
-      $("#LCD31_count").text(result[0].Ulsan+"명");
-      $("#LCD40_count").text(result[0].Sejong+"명");
-      $("#LCD41_count").text(result[0].Gyeonggi+"명");
-      $("#LCD42_count").text(result[0].Gangwon+"명");
-      $("#LCD43_count").text(result[0].Chungbuk+"명");
-      $("#LCD44_count").text(result[0].Chungnam+"명");
-      $("#LCD45_count").text(result[0].Jeonbuk+"명");
-      $("#LCD46_count").text(result[0].Jeonnam+"명");
-      $("#LCD47_count").text(result[0].Gyeongbuk+"명");
-      $("#LCD49_count").text(result[0].Gyeongnam+"명");
-      $("#LCD50_count").text(result[0].Jeju+"명");
+    function getLatestDayseQuery_Map(){
+      jQuery.ajax({
+          type: "GET",
+          url: "/getLatestDay",
+          data: {},
+          success: function(result){},
+          error: function(error){console.log("error : " , error);}
+      }).done(function(result){
+          /**
+            * 11    26    27    28    29    30    31    40    41  42    43    44    45    46    47    49    50
+            * 서울  부산  대구  인천    광주  대전  울산  세종  경기  강원  충북  충남  전북  전남  경북  경남  제주
+            **/
+          $("#LCD11_count").text(result[0].Seoul+"명");
+          $("#LCD26_count").text(result[0].Busan+"명");
+          $("#LCD27_count").text(result[0].Daegu+"명");
+          $("#LCD28_count").text(result[0].Incheon+"명");
+          $("#LCD29_count").text(result[0].Gwangju+"명");
+          $("#LCD30_count").text(result[0].Daejeon+"명");
+          $("#LCD31_count").text(result[0].Ulsan+"명");
+          $("#LCD40_count").text(result[0].Sejong+"명");
+          $("#LCD41_count").text(result[0].Gyeonggi+"명");
+          $("#LCD42_count").text(result[0].Gangwon+"명");
+          $("#LCD43_count").text(result[0].Chungbuk+"명");
+          $("#LCD44_count").text(result[0].Chungnam+"명");
+          $("#LCD45_count").text(result[0].Jeonbuk+"명");
+          $("#LCD46_count").text(result[0].Jeonnam+"명");
+          $("#LCD47_count").text(result[0].Gyeongbuk+"명");
+          $("#LCD49_count").text(result[0].Gyeongnam+"명");
+          $("#LCD50_count").text(result[0].Jeju+"명");
 
-      $("#LCD11_gap").text("(" + (result[0].Seoul - result[1].Seoul) + ")");
-      $("#LCD26_gap").text("(" + (result[0].Busan - result[1].Busan) + ")");
-      $("#LCD27_gap").text("(" + (result[0].Daegu - result[1].Daegu) + ")");
-      $("#LCD28_gap").text("(" + (result[0].Incheon - result[1].Incheon) + ")");
-      $("#LCD29_gap").text("(" + (result[0].Gwangju - result[1].Gwangju) + ")");
-      $("#LCD30_gap").text("(" + (result[0].Daejeon - result[1].Daejeon) + ")");
-      $("#LCD31_gap").text("(" + (result[0].Ulsan - result[1].Ulsan) + ")");
-      $("#LCD40_gap").text("(" + (result[0].Sejong - result[1].Sejong) + ")");
-      $("#LCD41_gap").text("(" + (result[0].Gyeonggi - result[1].Gyeonggi) + ")");
-      $("#LCD42_gap").text("(" + (result[0].Gangwon - result[1].Gangwon) + ")");
-      $("#LCD43_gap").text("(" + (result[0].Chungbuk - result[1].Chungbuk) + ")");
-      $("#LCD44_gap").text("(" + (result[0].Chungnam - result[1].Chungnam) + ")");
-      $("#LCD45_gap").text("(" + (result[0].Jeonbuk - result[1].Jeonbuk) + ")");
-      $("#LCD46_gap").text("(" + (result[0].Jeonnam - result[1].Jeonnam) + ")");
-      $("#LCD47_gap").text("(" + (result[0].Gyeongbuk - result[1].Gyeongbuk) + ")");
-      $("#LCD49_gap").text("(" + (result[0].Gyeongnam - result[1].Gyeongnam) + ")");
-      $("#LCD50_gap").text("(" + (result[0].Jeju - result[1].Jeju) + ")");
-});
+          $("#LCD11_gap").text("(" + (result[0].Seoul - result[1].Seoul) + ")");
+          $("#LCD26_gap").text("(" + (result[0].Busan - result[1].Busan) + ")");
+          $("#LCD27_gap").text("(" + (result[0].Daegu - result[1].Daegu) + ")");
+          $("#LCD28_gap").text("(" + (result[0].Incheon - result[1].Incheon) + ")");
+          $("#LCD29_gap").text("(" + (result[0].Gwangju - result[1].Gwangju) + ")");
+          $("#LCD30_gap").text("(" + (result[0].Daejeon - result[1].Daejeon) + ")");
+          $("#LCD31_gap").text("(" + (result[0].Ulsan - result[1].Ulsan) + ")");
+          $("#LCD40_gap").text("(" + (result[0].Sejong - result[1].Sejong) + ")");
+          $("#LCD41_gap").text("(" + (result[0].Gyeonggi - result[1].Gyeonggi) + ")");
+          $("#LCD42_gap").text("(" + (result[0].Gangwon - result[1].Gangwon) + ")");
+          $("#LCD43_gap").text("(" + (result[0].Chungbuk - result[1].Chungbuk) + ")");
+          $("#LCD44_gap").text("(" + (result[0].Chungnam - result[1].Chungnam) + ")");
+          $("#LCD45_gap").text("(" + (result[0].Jeonbuk - result[1].Jeonbuk) + ")");
+          $("#LCD46_gap").text("(" + (result[0].Jeonnam - result[1].Jeonnam) + ")");
+          $("#LCD47_gap").text("(" + (result[0].Gyeongbuk - result[1].Gyeongbuk) + ")");
+          $("#LCD49_gap").text("(" + (result[0].Gyeongnam - result[1].Gyeongnam) + ")");
+          $("#LCD50_gap").text("(" + (result[0].Jeju - result[1].Jeju) + ")");
+      });
+    }
+
   </script>
 </head>
 <style>

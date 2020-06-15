@@ -7,9 +7,80 @@
 
     // 마지막 2일의 일일 정보를 가져온다.(전날과 비교, 오늘의 데이터를 위해)
     getLatestDaysQuery(null);
-    getLatestAccmulateQuery(null);
-
+    // getLatestAccmulateQuery(null);
+    // getLatestDayseQuery_Map(null);
+    // console.log("getFormatDate : " , getFormatDate(new Date("2020-04-10 11:17:35.35")))
     function getLatestDaysQuery(date){
+      var yesterDay = new Date();
+      yesterDay.setTime(new Date().getTime() - (1 * 24 * 60 * 60 * 1000))
+
+      // 공공데이터 누적 API 조회
+      jQuery.ajax({
+         type: "GET",
+         url: "/getLatestInfoData",
+         data: {
+           start : getFormatDate(yesterDay),
+           end : getFormatDate(new Date())
+         },
+         success: function(result){},
+         error: function(error){console.log("error : " , error);}
+      }).done(function(result){               // 선택날짜의 전날과, 지금의 사망자수의 차이를 구한다
+          var item =  JSON.parse(result).response.body.items.item;
+          $("#txt_titleDate").html("&nbsp&nbsp(" + item[0].createDt + " 기준)");
+          $("#txt_accumulate_checkup").html(item[0].examCnt + "명");
+          $("#txt_accumulate_confirm").html(item[0].decideCnt+ "명");
+          $("#txt_accumulate_death").html(item[0].deathCnt+ "명");
+          $("#chart_accmulate_checkup").html("(" + item[0].examCnt + "명)");
+          $("#chart_accmulate_confirm").html("(" + item[0].decideCnt + "명)");
+
+          // 누적 검사현황의 원 그래프를 그린다.
+          var chartData = document.getElementById('checkChart').getContext('2d');
+          new Chart(chartData, {
+            type: 'pie',
+            data: {
+              labels: ['확진','검사중'],
+              datasets: [{
+                backgroundColor: ['#0b2284','#d3d3d3'],
+                data: [item[0].decideCnt, item[0].examCnt],
+                borderColor:"#f2f2f2"
+              }]
+            },
+            options: {
+              legend: {display: false}
+            }
+          });
+      });
+
+      jQuery.ajax({
+         type: "GET",
+         url: "/getLatestDosiData",
+         data: {
+           start : getFormatDate(yesterDay),
+           end : getFormatDate(new Date())
+         },
+         success: function(result){},
+         error: function(error){console.log("error : " , error);}
+      }).done(function(result){               // 선택날짜의 전날과, 지금의 사망자수의 차이를 구한다
+        var today =  JSON.parse(result.today).response.body.items.item;
+        var yesterDay =  JSON.parse(result.yesterDay).response.body.items.item;
+        console.log("item : " , today)
+        var sum = 0;
+        today.forEach((item, i) => {
+          sum += item.incDec;
+          console.log( item.gubun + " : " + item.incDec);
+        });
+        console.log("sum : " , sum - today[0].incDec);
+
+        //   console.log("item : " , yesterDay)
+
+      });
+
+
+
+
+
+
+
       jQuery.ajax({
          type: "GET",
          url: "/getLatestDay",
@@ -64,52 +135,14 @@
      });
     }
 
-
-    // 마지막 2일의 누적 정보를 가져온다.(전날과 비교, 오늘의 누적 데이터를 위해)
-    function getLatestAccmulateQuery(date){
-      jQuery.ajax({
-          type: "GET",
-          url: "/getLatestAccmulate",
-          data: {date : date},
-          success: function(result){},
-          error: function(error){console.log("error : " , error);}
-      }).done(function(result){
-          // 받은 서버데이터를 해당 id에 입력한다.
-          console.log("(getLatestAccmulateQuery) result : " ,result);
-          $("#txt_accumulate_checkup").html(result[0].checkup + "명");
-          $("#txt_accumulate_confirm").html(result[0].confirm+ "명");
-          $("#txt_accumulate_death").html(result[0].death+ "명");
-          $("#chart_accmulate_checkup").html("(" + result[0].checkup+ "명)");
-          $("#chart_accmulate_confirm").html("(" + result[0].confirm+ "명)");
-
-          // 누적 검사현황의 원 그래프를 그린다.
-          var chartData = document.getElementById('checkChart').getContext('2d');
-          new Chart(chartData, {
-            type: 'pie',
-            data: {
-              labels: ['확진','검사중'],
-              datasets: [{
-                backgroundColor: ['#0b2284','#d3d3d3'],
-                data: [result[0].confirm, result[0].checkup],
-                borderColor:"#f2f2f2"
-              }]
-            },
-            options: {
-              legend: {display: false}
-            }
-          });
-      });
-    }
-
-
     // 달력 이미지의 기본세팅하는곳
     $(".datepicker-here").datepicker({
       language: 'en',
       onSelect: function onSelect(fd, date) {
         var date = getFormatDate(date);
-
-        getLatestDaysQuery(date);         // 선택된 날짜의 최근 2일간의 일일 데이터를 다시 가져옴
-        getLatestAccmulateQuery(date);    // 선택된 날짜의 최근 2일간의 누적 데이터를 다시 가져옴
+        console.log("date : " ,date);
+        // getLatestDaysQuery(date);         // 선택된 날짜의 최근 2일간의 일일 데이터를 다시 가져옴
+        // getLatestAccmulateQuery(date);    // 선택된 날짜의 최근 2일간의 누적 데이터를 다시 가져옴
         $(".datepicker-here").hide();     // 선택하고 숨김
       }
     })
@@ -125,9 +158,12 @@
       var year = date.getFullYear();
       var month = (1 + date.getMonth());
       var day = date.getDate();
+      var hours = date.getHours();
+      var min = date.getMinutes();
+      var second = date.getSeconds();
       month = month >= 10 ? month : '0' + month;
       day = day >= 10 ? day : '0' + day;
-      return  year + '-' + month + '-' + day + ' 00:00:00';
+      return  year + month + day;
     }
 
   </script>

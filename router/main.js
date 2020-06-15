@@ -1,5 +1,39 @@
 module.exports = function(app, connection)
 {
+	const request = require('request');
+	const key = "5d3ywBHCsVdtChGV7AYGHDjuul8XnbA9FaSDxL3pOqksYUoSAK4WToVw173U3UQK1xRpdHoSlLB51nkxT6Z0Ew%3D%3D";
+
+	function requestAPI(_method, _pageNo, _numOfRow, _startCreateDt, _endCreateDt, _callback){
+
+		const pageNo = _pageNo;
+		const numOfRow = _numOfRow;
+		const startCreateDt = _startCreateDt;
+		const endCreateDt = _endCreateDt;
+
+		const url = "http://openapi.data.go.kr/openapi/service/rest/Covid19/" + _method
+		 	+ "?serviceKey=" + key
+			+ "&pageNo=" + pageNo
+			+ "&numOfRows=" + numOfRow
+			+ "&startCreateDt=" + startCreateDt
+			+ "&endCreateDt="+endCreateDt;
+
+			request.get({
+				url : url,
+				method : "GET",
+				headers: {
+				 'Accept': 'application/json',
+				 'Accept-Charset': 'utf-8',
+				 'User-Agent': 'my-reddit-client'
+		 		}
+				},
+				function(err, res, body){
+					// console.log("res : " , body);
+					if(err) console.log("request err : " , err);
+					else{
+						_callback(body);
+					}
+				})
+	}
 	// 127.0.0.1:3000/ 로 들어왔을때 처리하는 서버코드
 	app.get('/',function(req,res){
 			// index.html을 클라이언트에게 rendering해라.
@@ -16,105 +50,50 @@ module.exports = function(app, connection)
 			res.render(category +'.html');
 	});
 
-	/**
-		*  127.0.0.1:3000/getAccmulate?date='날짜'로 들어왔을때 처리하는 서버코드
-		*    클라이언트(WebSite)에게 받은 날짜를 가지고, 데이터베이스에게 조회를 요청합니다.
-		*    ex : 127.0.0.1:3000/getAccmulate
-		*/
-	app.get('/getAccmulate',function(req,res){
-		var date = req.query.date + " 00:00:00"; 	// 클라이언트에게 받은 시간
-		var mode = req.query.mode;			// 클라이언트에게 받은 모드("weeks" or "days")
-		var mySql_Query;				// MySQL 언어를 저장할 변수
 
-		switch(mode){
-			case "weeks" :
-				// "최근 1주일의 누적 확진자수를 검색해줘" MySQL 명령문장을 저장.
-				// mySql_Query = "SELECT * FROM accumulate_logtable WHERE date > date_add(now(),interval -8 day);"
-				mySql_Query = "SELECT * from accumulate_logtable ORDER BY date DESC limit 7";
-				break;
-			case "days" :
-				 // "클라이언트에게 받은 날짜의 확진자수를 검색해줘" MySQL 명령문장을 저장.
-				mySql_Query = "SELECT * FROM accumulate_logtable WHERE date=\"" + date + "\";"
-				break;
-		}
-		console.log("mySql_Query : " , mySql_Query); // 서버 콘솔창에 출력. 이 문장은 위에서 담은 MySQL 변수를 출력
-		try{
-			// 데이터베이스 정보를 담은 변수를 사용해서 MYSQL 언어를 데이터베이스에 전달한다.
-			connection.query(mySql_Query, function(err, rows) {
-				if(err) throw err; // 에러가 있을경우 에러메시지를 출력
-				res.send(rows);		 // 에러가 없을경우 클라이언트에게 결과값(rows)를 응답.
-			});
-		}catch(e){
-			res.send(e);
-		}
+
+	app.get('/getLatestInfoData',function(req,res){
+	 	const page = 1;
+		const numOfRow = 10;
+		var start = req.query.start;
+		var end = req.query.end;
+		requestAPI("getCovid19InfStateJson", page, numOfRow, start, end,function(data){
+			if(res)
+				res.send(data);
+			else {
+				res.send(false)
+			}
+		});
 	});
 
-	/**
-		*  127.0.0.1:3000/getDays?date='날짜'로 들어왔을때 처리하는 서버코드
-		*    클라이언트(WebSite)에게 받은 날짜를 가지고, 데이터베이스에게 조회를 요청합니다.
-		*    ex : 127.0.0.1:3000/getDays?date='2020-05-03' => 2020-05-03 날짜의 일일 데이터
-		*/
-	app.get('/getDays', function(req,res){
-		var date = req.query.date + " 00:00:00"; 	// 클라이언트에게 받은 시간
-		var mode = req.query.mode;			// 클라이언트에게 받은 모드("weeks" or "days")
-		var mySql_Query;				// MySQL 언어를 저장할 변수
-
-		switch(mode){
-			case "weeks" :
-				// "최근 1주일의 일일 확진자수를 검색해줘" MySQL 명령문장을 저장.
-				// mySql_Query = "SELECT * FROM days_logtable WHERE date > date_add(now(),interval -8 day);"
-				mySql_Query = "SELECT * from days_logtable ORDER BY date DESC limit 7";
-				break;
-			case "days" :
-				// "클라이언트에게 받은 날짜의 확진자수를 검색해줘" MySQL 명령문장을 저장.
-				mySql_Query = "SELECT * FROM days_logtable WHERE date=\"" + date + "\";"
-				break;
+	app.get('/getLatestDosiData',function(req,res){
+	 	const page = 1;
+		const numOfRow = 10;
+		var start = req.query.start;
+		var end = req.query.end;
+		var obj = {
+			today : null,
+			yesterDay : null
 		}
-		console.log("mySql_Query : " , mySql_Query);// 서버 콘솔창에 출력. 이 문장은 위에서 담은 MySQL 변수를 출력
-		try{
-			// 데이터베이스 정보를 담은 변수를 사용해서 MYSQL 언어를 데이터베이스에 전달한다.
-			connection.query(mySql_Query, function(err, rows) {
-				if(err) throw err; // 에러가 있을경우 에러메시지를 출력
-				res.send(rows);		 // 에러가 없을경우 클라이언트에게 결과값(rows)를 응답.
-			});
-		}
-		catch(e){
-			res.send(e);
-		}
+		requestAPI("getCovid19SidoInfStateJson", page, numOfRow, start, start,function(data){
+			if(res){
+				obj.today = data;
+				requestAPI("getCovid19SidoInfStateJson", page, numOfRow, end, end,function(data){
+					if(res){
+						obj.yesterDay = data;
+						res.send(obj);
+					}
+					else {
+						res.send(false)
+					}
+				});
+			}
+			else {
+				res.send(false)
+			}
+		});
 	});
 
-	app.get('/getLatestDay',function(req,res){
-		var date = req.query.date;
-		console.log("date : " ,date);
-		if(!date)
-			mySql_Query = "SELECT * from days_logtable ORDER BY date DESC limit 2;"
-		else {
-			mySql_Query = "SELECT * from days_logtable WHERE date='" + date + "' ORDER BY date DESC limit 2;"
-		}
-
-		console.log("mySql_Query : " ,mySql_Query);
-		try{
-			connection.query(mySql_Query, function(err, rows) {
-				if(err) throw err; // 에러가 있을경우 에러메시지를 출력
-				res.send(rows);		 // 에러가 없을경우 클라이언트에게 결과값(rows)를 응답.
-			});
-		}catch(e){
-			res.send(e);
-		}
-	});
-
-	app.get('/getLatestAccmulate',function(req,res){
-		mySql_Query = "SELECT * from accumulate_logtable ORDER BY date DESC limit 1;"
-		try{
-			connection.query(mySql_Query, function(err, rows) {
-				if(err) throw err; // 에러가 있을경우 에러메시지를 출력
-				res.send(rows);		 // 에러가 없을경우 클라이언트에게 결과값(rows)를 응답.
-			});
-		}
-		catch(e){
-			res.send(e);
-		}
-	});
 
 	// 질병관리본부 테이블의 제목ID에 맞는 내용을 가져와라
 	app.get('/getComment',function(req,res){
