@@ -16,6 +16,7 @@ module.exports = function(app, connection)
 			+ "&numOfRows=" + numOfRow
 			+ "&startCreateDt=" + startCreateDt
 			+ "&endCreateDt="+endCreateDt;
+			console.log("url : " , url);
 
 			request.get({
 				url : url,

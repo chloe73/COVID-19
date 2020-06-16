@@ -3,16 +3,11 @@
   <script src="datepicker/js/datepicker.min.js"></script>
   <script src="datepicker/js/i18n/datepicker.en.js"></script>
   <script>
-    $(".mapWrap").load("/page/Republic_Korea_2019");
-
-    $(".datepickers-container").show();     // 선택하고 숨김
-    // 마지막 2일의 일일 정보를 가져온다.(전날과 비교, 오늘의 데이터를 위해)
+    sessionStorage.clear();
     getTotalData(null);
-    getDaysData(null)
-    // getLatestAccmulateQuery(null);
-    // getLatestDayseQuery_Map(null);
-    // console.log("getFormatDate : " , getFormatDate(new Date("2020-04-10 11:17:35.35")))
-
+    getDaysData(null);
+    $(".datepickers-container").show();
+    $(".mapWrap").load("/page/Republic_Korea_2019");
 
     // 공공데이터 누적 API 조회
     function getTotalData(date){
@@ -29,7 +24,7 @@
          },
          success: function(result){},
          error: function(error){console.log("error : " , error);}
-      }).done(function(result){               // 선택날짜의 전날과, 지금의 사망자수의 차이를 구한다
+      }).done(function(result){
           var item =  JSON.parse(result).response.body.items.item;
           $("#txt_titleDate").html("&nbsp&nbsp(" + item[0].createDt + " 기준)");
           $("#txt_Decide").html(item[0].decideCnt + "명");
@@ -42,6 +37,8 @@
           $("#chart_accmulate_confirm").html("(" + item[0].decideCnt + "명)");
 
           // 누적 검사현황의 원 그래프를 그린다.
+          $("#totalChartWrap").empty();
+          $("#totalChartWrap").append("<canvas id=\"checkChart\"></canvas>");
           var chartData = document.getElementById('checkChart').getContext('2d');
           new Chart(chartData, {
             type: 'pie',
@@ -60,8 +57,6 @@
       });
     }
 
-
-
     function getDaysData(date){
       var today = date == null ? new Date() :  new Date(date);
       var yesterDay = new Date();
@@ -78,8 +73,14 @@
          success: function(result){},
          error: function(error){console.log("error : " , error);}
       }).done(function(result){               // 선택날짜의 전날과, 지금의 사망자수의 차이를 구한다
+
+
+
         var today =  JSON.parse(result.today).response.body.items.item;
         var yesterDay =  JSON.parse(result.yesterDay).response.body.items.item;
+
+        console.log("today : " , today);
+        console.log("yesterDay : " , today);
 
         $("#txt_IncDec").html("(" + today[today.length-1].incDec + ")");
         $("#txt_IsolClear").html(today[today.length-1].isolClearCnt + "명");
@@ -96,6 +97,10 @@
         $("#txt_map_daysCheckupGap").html("(" + (yesterDay[yesterDay.length-1].isolIngCnt - today[today.length-1].isolIngCnt) + ")");
         $("#txt_map_daysDeathGap").html("(" + (yesterDay[yesterDay.length-1].deathCnt - today[today.length-1].deathCnt) + ")");
 
+
+
+        $("#mapChartWrap").empty();
+        $("#mapChartWrap").append("<canvas id=\"daysChart\"></canvas>");
         var daysChart = document.getElementById('daysChart').getContext('2d');
         new Chart(daysChart, {
           type: 'pie',
@@ -109,6 +114,7 @@
           },
           options: {  legend: {display: true}  }
         });
+
       });
     }
 
@@ -117,10 +123,11 @@
     $(".calenderClass").datepicker({
       language: 'en',
       onSelect: function onSelect(fd, date) {
-        var date = getFormatDate("YY-MM-HH hh:mm:ss", date);
-        console.log("date : " ,date);
-        getTotalData(date);
-        getDaysData(date);
+        var selectDate = getFormatDate("YY-MM-HH hh:mm:ss", date);
+        sessionStorage.setItem("selectDate", selectDate);
+        getTotalData(selectDate);
+        getDaysData(selectDate);
+        $(".mapWrap").load("/page/Republic_Korea_2019");
         // getLatestDaysQuery(date);         // 선택된 날짜의 최근 2일간의 일일 데이터를 다시 가져옴
         // getLatestAccmulateQuery(date);    // 선택된 날짜의 최근 2일간의 누적 데이터를 다시 가져옴
         $(".calenderClass").hide();     // 선택하고 숨김
@@ -222,7 +229,7 @@
       </div>
     </div>
     <div class="dataContentWrap">
-      <div id="chartWrap">
+      <div class="chartWrap" id="totalChartWrap">
         <canvas id="checkChart"></canvas>
       </div>
 
@@ -257,7 +264,7 @@
         <a class="info_title01">전국</a> <a class="info_title02">지역발생비율</a>
       </div>
 
-      <div class="chartWrap">
+      <div class="chartWrap" id="mapChartWrap">
         <canvas id="daysChart"></canvas>
       </div>
 

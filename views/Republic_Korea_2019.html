@@ -2,8 +2,10 @@
   <script>
     getLatestDayseQuery_Map();
     function getLatestDayseQuery_Map(){
+      var date = sessionStorage.getItem("selectDate");
+      var today = date == null ? new Date() :  new Date(date);
       var yesterDay = new Date();
-      yesterDay.setTime(new Date().getTime() - (1 * 24 * 60 * 60 * 1000))
+        yesterDay.setTime(today.getTime() - (1 * 24 * 60 * 60 * 1000));
 
       // 공공데이터 누적 API 조회
       jQuery.ajax({
@@ -18,8 +20,6 @@
       }).done(function(result){
         var today =  JSON.parse(result.today).response.body.items.item;
         var yesterDay =  JSON.parse(result.yesterDay).response.body.items.item;
-
-        // console.log("today : " , today);
 
         $("#LCD11_count").text(today[17].defCnt+"명");
         $("#LCD26_count").text(today[16].defCnt+"명");
@@ -56,7 +56,6 @@
         $("#LCD47_gap").text("(+" + today[3].incDec + ")");
         $("#LCD49_gap").text("(+" + today[2].incDec + ")");
         $("#LCD50_gap").text("(+" + today[1].incDec + ")");
-
       });
     }
 

@@ -1,5 +1,8 @@
 <html>
 <head>
+  <link href="datepicker/css/datepicker.min.css" rel="stylesheet" type="text/css">
+  <script src="datepicker/js/datepicker.min.js"></script>
+  <script src="datepicker/js/i18n/datepicker.en.js"></script>
   <script>
     /**
       * jQuery: 클라이언트용 라이브러리(버튼,텍스트, 리스트 등의 처리 & 서버로 요청하는 기능)
@@ -93,12 +96,19 @@
       *   date : 서버로부터 받은 최근 1주일의 날짜를 배열로 저장 {7일전, 6일전, 5일전, 4일전,3일전, 2일전, 1일전}
       *   count : 서버로부터 받은 최근 1주일의 확진자수를 배열로 저장 {7일전 확진자, 6일전확진자, 5일전확진자, 4일전확진자,3일전확진자, 2일전확진자, 1일전확진자}
       */
+
+
+
     function renderGraph(mode, data){
+      $("#chartWrap").empty();
+      $("#chartWrap").append("<canvas id=\"myChart\"></canvas>");
+
       var date = data.date;
       var count = data.count;
       var ctx = document.getElementById('myChart').getContext('2d');
+
       // 위에서 처리한 데이터를 기준으로 그래프 그리기
-      new Chart(ctx, {
+      var chart = new Chart(ctx, {
         type: 'bar',
         data: {
           labels: [
@@ -119,7 +129,11 @@
           scales: {
             xAxes: [{  barPercentage: 0.4  }]
           }
-        }
+        },
+        hover: {
+                mode: 'index',
+                intersect: true
+            }
       });
 
     }
@@ -129,22 +143,6 @@
       else decideTotalData();
 
     }
-
-    // 달력 이미지의 기본세팅하는곳
-    $(".datepicker-here").datepicker({
-      language: 'en',
-      onSelect: function onSelect(fd, date) {
-        var date = getFormatDate("YY-MM-HH hh:mm:ss", date);
-        console.log("date : " ,date);
-        getTotalData(date);
-        getDaysData(date);
-        // getLatestDaysQuery(date);         // 선택된 날짜의 최근 2일간의 일일 데이터를 다시 가져옴
-        // getLatestAccmulateQuery(date);    // 선택된 날짜의 최근 2일간의 누적 데이터를 다시 가져옴
-        $(".datepicker-here").hide();     // 선택하고 숨김
-      }
-    })
-
-
   </script>
 </head>
 <body>
