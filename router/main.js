@@ -16,7 +16,7 @@ module.exports = function(app, connection)
 			+ "&numOfRows=" + numOfRow
 			+ "&startCreateDt=" + startCreateDt
 			+ "&endCreateDt="+endCreateDt;
-			console.log("url : " , url);
+			// console.log("url : " , url);
 
 			request.get({
 				url : url,
@@ -138,7 +138,10 @@ module.exports = function(app, connection)
 		try{
 			mySql_Query = "SELECT COUNT(*) AS count from " + table +";"; // 레코드 개수 가져오는명령
 			connection.query(mySql_Query, function(err, rows) {
-				if(err) throw err;
+				if(err){
+					cosnole.log("err : " ,err);
+					res.send(err);
+				}
 
 				var count = rows[0].count; // 첫번째 connection.query를 통해 가져온 레코드 개수를 저장
 				var startID = (count-1) - ((page-1) * 10) ;
