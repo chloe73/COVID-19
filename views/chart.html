@@ -33,13 +33,13 @@
            type: "GET",
            url: "/getLatestInfoData",
            data: {
-             start : getFormatDate(weekAgo),
-             end : getFormatDate(new Date())
+             start : getFormatDate(null, weekAgo),
+             end : getFormatDate(null, new Date())
            },
            success: function(result){
                result =  JSON.parse(result).response.body.items.item;
                result.forEach((item, i) => {
-                 (dataObject.date).push(getFormatDate(new Date(item.createDt)));
+                 (dataObject.date).push(getFormatDate("YY-MM-HH", new Date(item.createDt)));
                  (dataObject.count).push(item.decideCnt);
                });
            },
@@ -58,8 +58,8 @@
            type: "GET",
            url: "/getWeeksDosiData",
            data: {
-             start : getFormatDate(weekAgo),
-             end : getFormatDate(new Date())
+             start : getFormatDate(null, weekAgo),
+             end : getFormatDate(null, new Date())
            },
            success: function(result){},
            error: function(error){console.log("error : " , error);}
@@ -67,7 +67,7 @@
           var data =  JSON.parse(result).response.body.items.item;
           data.forEach((item, i) => {
             if(item.gubun === "합계"){
-              (dataObject.date).push(getFormatDate(new Date(item.createDt)));
+              (dataObject.date).push(getFormatDate("YY-MM-HH", new Date(item.createDt)));
               (dataObject.count).push(item.incDec);
             }
           });
@@ -77,7 +77,7 @@
 
 
     // DB의 날짜를 한국형식(YYYY-MM-HH)로 리턴해주는 함수.
-    function getFormatDate(date){
+    function getFormatDate(mode, date){
       var year = date.getFullYear();
       var month = (1 + date.getMonth());
       var day = date.getDate();
@@ -86,7 +86,9 @@
       var second = date.getSeconds();
       month = month >= 10 ? month : '0' + month;
       day = day >= 10 ? day : '0' + day;
-      return  year + month + day;
+
+      if(mode == "YY-MM-HH") return year + "-" + month + "-"+ day + "";
+      else return  year + month + day;
     }
 
     /**
