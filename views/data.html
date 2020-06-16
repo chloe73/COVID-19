@@ -59,14 +59,15 @@
         catch(e){
           // 만약 정보갱신이 늦어 오늘자 데이터가 없어서 에러가 난다면, 이전날과, 이전전날의 데이터를 보여주도록
           console.log("e : " , e);
-          var today = date == null ? new Date() : new Date(date);
-          var yesterDay = new Date();
-            yesterDay.setTime(today.getTime() - (1 * 24 * 60 * 60 * 1000));
-          getTotalData(yesterDay)
-          getDaysData(yesterDay);
-          var selectDate = getFormatDate("YY-MM-HH hh:mm:ss", yesterDay);
-          sessionStorage.setItem("selectDate", selectDate);
-          $(".mapWrap").load("/page/Republic_Korea_2019");
+          
+          // var today = date == null ? new Date() : new Date(date);
+          // var yesterDay = new Date();
+          //   yesterDay.setTime(today.getTime() - (1 * 24 * 60 * 60 * 1000));
+          // getTotalData(yesterDay)
+          // getDaysData(yesterDay);
+          // var selectDate = getFormatDate("YY-MM-HH hh:mm:ss", yesterDay);
+          // sessionStorage.setItem("selectDate", selectDate);
+          // $(".mapWrap").load("/page/Republic_Korea_2019");
         }
 
       });
