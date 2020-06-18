@@ -3,13 +3,23 @@
   <script src="datepicker/js/datepicker.min.js"></script>
   <script src="datepicker/js/i18n/datepicker.en.js"></script>
   <script>
+    /**
+      * jQuery: 클라이언트용 라이브러리(버튼,텍스트, 리스트 등의 처리 & 서버로 요청하는 기능)
+      * jQuery.ajax : 서버로 요청하는 기능
+      *   type : 서버로 요청하는 종류(get, post, put, delete)
+      *   url : 서버로 요청할때의 메소드 (main.js 코드에 똑같은 경로가 있다.)
+      *   data : 서버에 요청함과 동시에 전달한 데이터
+      *   success() : 서버에게 정상적으로 요청하고, 결과값을 응답받았을때 호출되는곳
+      *   done() : 서버에게 정상적으로 요청하고, 결과값을 응답받고, 뒷처리를 다했을때 호출되는곳. (success 다음에 호출됨)
+      */
+
 
     /**
       * data 화면의 데이터 렌더링부분
       **/
     var yesterDay = new Date();                             // Date 자료형의 객체를 저장
       yesterDay.setTime(new Date() - (1 * 24 * 60 * 60 * 1000)); // 오늘 날짜가 저장된 변수를 기준으로 어제 날짜를 구한다.
-    sessionStorage.clear();       // 세션초기화
+    sessionStorage.clear();            // 세션초기화
     getTotalData(yesterDay);           // 공공데이터 누적 API 조회 함수 호출
     getDaysData(yesterDay);            // 공공데이터 도시별 API 조회 함수 호출
 
@@ -102,6 +112,9 @@
       }).done(function(result){
         var today =  JSON.parse(result.today).response.body.items.item;           // 서버에서 응답한 오늘자 데이터를 저장
         var yesterDay =  JSON.parse(result.yesterDay).response.body.items.item;   // 서버에서 응답한 어제자 데이터를 저장.
+
+        // console.log("today : " , today);
+        // console.log("yesterDay : " , yesterDay);
 
         // 같은날 3번씩 갱신된 경우가 있어서 데이터 길이가 길때는, 제일 마지막의 19개만 가져온다(검역,제주,부산.. ~ .. 합계까지 마지막 총 19개)
         if(today.length > 19){today = today.slice( today.length-19, today.length)  }
@@ -201,7 +214,7 @@
       var second = date.getSeconds();
       month = month >= 10 ? month : '0' + month;
       day = day >= 10 ? day : '0' + day;
-      
+
       // 날짜변환이 두가지의 형태가 필요해서 mode에 따라 리턴하는 날짜포맷을 바꿔준다.
       if(mode == "YY-MM-HH hh:mm:ss") return year + "-" + month + "-"+ day + " 00:00:00";
       else return  year + month + day;
