@@ -2,9 +2,9 @@
   <script>
 
     // 뒤로가기 이벤트가 생겼을때, 페이지 이동이 화면을 바꾼다.
-    // Statement comment 화면에서 뒤로가기 -> statement 제목목록(statement.html) 화면으로 이동
     history.pushState(null, null, location.href);
     window.onpopstate = function(event) {
+      // Statement comment 화면에서 뒤로가기 -> statement 제목목록(statement.html) 화면으로 이동
       var menu = sessionStorage.getItem("sideMenu");
       switch(menu){
         case "STATE":
@@ -21,20 +21,20 @@
        type: "GET",
        url: "/getComment",
        data: {
-         id:statementID,
-         table : "statement_table"
+         id:statementID,                  // 게시물 제목의 id
+         table : "statement_table"        // 조회하고자하는 테이블이름
        },
        success: function(result){},
        error: function(error){console.log("error : " , error);}
     }).done(function(result){
       // DB에 등록된 제목 개수만큼 반복해서 html Table을 그린다.
       result.forEach((item, i) => {
-        $(".stateTable").append("<tr class='title'></tr>");
-        $(".title").append("<td class='tb_title' style='text-align:left;'>" + item.title +"</td>");
-        $(".title").append("<td class='tb_date'>" + getFormatDate(new Date(item.date)) +"</td>");
+        $(".stateTable").append("<tr class='title'></tr>");                                             // 테이블에 제목을 적을수 있는 줄 추가
+        $(".title").append("<td class='tb_title' style='text-align:left;'>" + item.title +"</td>");     // 추가된 줄에 제목 추가
+        $(".title").append("<td class='tb_date'>" + getFormatDate(new Date(item.date)) +"</td>");       // 추가된 줄에 날짜 추가
 
-        $(".stateTable").append("<tr class='comment' ></tr>");
-        $(".comment").append("<td colspan='2' class='comment_tr' style='text-align:left;'></td>");
+        $(".stateTable").append("<tr class='comment' ></tr>");                                          // 테이블에 내용을 적을수 있는 줄 추가
+        $(".comment").append("<td colspan='2' class='comment_tr' style='text-align:left;'></td>");      // 추가된 줄에 게시물 내용 추가(사진이면 사진이 추가됨)
         $(".comment_tr").append(item.comment);
       });
     });
